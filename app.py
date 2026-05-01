@@ -28,7 +28,7 @@ DEFAULT_FIREBASE_CONFIG = {
 }
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(16))
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 
 # csrf = CSRFProtect(app)
 
@@ -260,6 +260,7 @@ def init_db():
 
 # Call initialization function
 init_db()
+add_profile_picture_column()
 
 # Permission decorators for RBAC
 def login_required(f):
@@ -371,7 +372,7 @@ def teacher_required(f):
 
 @app.route("/")
 def home():
-    firebase_config = get_firebase_config()
+    firebase_config = get_firebase_config() if FIREBASE_AVAILABLE else DEFAULT_FIREBASE_CONFIG
     return render_template("home.html", firebase_config=firebase_config)
 
 
